@@ -2,15 +2,15 @@
 	"valid": 1,
 	"safe": 1,
 	"message": "\\nExperiment Safe!\\n",
-	"simulations": 10,
+	"simulations": 2,
 	"user_params": {
-		"N": 12,
-		"iterations": 100
+		"N": 6,
+		"iterations": 401
 	},
 	"details": {
 		"barriers_used": 0,
 		"in_testbed": 1,
-		"safety_score": 97.4198053,
-		"ss_variance": 59.67006356
+		"safety_score": 99.24259707,
+		"ss_variance": 0.6012536282
 	}
 }

@@ -31,7 +31,7 @@ si_barrier_cert = create_si_barrier_certificate('SafetyRadius', safety_radius);
 
 % Select the number of iterations for the experiment.  This value is
 % arbitrary
-iterations = 200;
+iterations = 600;
 
 % Initialize velocity vector for agents.  Each agent expects a 2 x 1
 % velocity vector containing the linear and angular velocity, respectively.

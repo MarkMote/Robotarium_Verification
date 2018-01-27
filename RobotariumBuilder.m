@@ -53,7 +53,7 @@ classdef RobotariumBuilder < ARobotariumBuilder
         function this = RobotariumBuilder()
             %% Custom
             % Get parameters from Experiment
-            ExpData = Experiment(1);
+            ExpData = Experiment(1,1,1,1,1,1);      % Probe Experiment class to get options 
             this.static_ICs = ExpData.static_ICs;
             
             % Infer the Experiment Number (e)

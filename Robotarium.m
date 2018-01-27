@@ -70,7 +70,7 @@ classdef Robotarium < ARobotarium
                 this.expNum = this.expNum -1;
             end
             % Load specifications from experiment class
-            ExpData = Experiment(1);
+            ExpData = Experiment(1,1,1,1,1,1);
             this.sim_collisions = ExpData.sim_collisions;
             N = number_of_agents;
             this.D_robot = 0.06;

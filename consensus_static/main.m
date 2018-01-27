@@ -7,7 +7,7 @@ rb = RobotariumBuilder();
 
 % Get the number of available agents from the Robotarium.  We don't need a
 % specific value for this algorithm
-N = rb.get_available_agents();
+N = 100;
 
 % Set the number of agents and whether we would like to save data.  Then,
 % build the Robotarium simulator object!
@@ -70,7 +70,7 @@ for t = 1:iterations
     
     %% Utilize barrier certificates
     
-    dxi = si_barrier_cert(dxi, xi);
+%     dxi = si_barrier_cert(dxi, xi);
     
     % Transform the single-integrator to unicycle dynamics using the the
     % transformation we created earlier

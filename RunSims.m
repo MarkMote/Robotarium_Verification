@@ -1,17 +1,19 @@
-% Runs the Monte Carlo
+S% Runs the Monte Carlo
 clear; clc; close all
 % Note - must go into Robotartium object and make sure data is being saved
 % for each experiement regardless of user specification
 
 %% Set Specifications 
 N_min = 1;  % Minumum number of robots allowable 
-N_max = 50; %  
-
+N_max = 50;                      % Max # robots
+iter_min = 32;                   % Min 1  second
+iter_max = ceil(10.*(60/0.033)); % Max 10 minutes
+damageThreshold = 0.03;          % A normalization factor on how much damage the robots can take
+maxRunTime = 20;                 % second
 
 %% Initialization
 run init
-maxRunTime = 20; % seconds
-Exp = Experiment(N_min);
+Exp = Experiment(N_min, N_max, iter_min, iter_max, damageThreshold, maxRunTime);
 
 % Location of script
 cd formation_control
@@ -20,7 +22,7 @@ cd formation_control
 % Clear all *.mat files from the workspace
 delete *.mat
 
-%% First Run
+%% First Run - Access Validity
 % The first run is Error Free
 runTime = tic;
 currentTime(1) = toc(runTime);
@@ -34,7 +36,12 @@ try
     Exp.valid = Exp.interpSpecs(1, true);
 catch me
     Exp.valid = false; 
-    Exp.message = strcat('\n- ',me.message); % If experiment runs correctly, reset message 
+    Exp.message = strcat('\nExperiment does not complete.\n\nError message:\n- ',me.message); % If experiment runs correctly, reset message 
+    Exp.E = 0;
+    Exp.uSpec{1}.N = [];
+    Exp.uSpec{1}.iterations = [];
+    Exp.barriers_used = [];
+%     cd .. 
 end
 
 %% Experiment Looping
@@ -144,10 +151,10 @@ else % not valid
     fprintf('\n___________________________________________________\n\n')
 
     Exp.message = strcat('\nExperiment Invalid\n\nReason(s):\n',Exp.message); 
-
+    
 end
 
-%% Print Message 
+%% Print Message and Save to JSON file 
 
 fprintf('\nMessage to user:\n')
 fprintf(Exp.message);
@@ -166,5 +173,5 @@ out.details.in_testbed = Exp.inTestbed;
 out.details.safety_score = Exp.SafetyScore;
 out.details.ss_variance = var(Exp.Sval);
 
-savejson('',out,'Saved_Experiments/OutData')
+savejson('',out,'Saved_Experiments/OutData.json')
 

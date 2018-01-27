@@ -2,36 +2,34 @@ classdef Experiment < handle
     % Experiment manages the Monte Carlo Simulations
     
     properties (GetAccess = public, SetAccess = public)
-        E;
-        uSpec;
-        statesLog;
+        E = 1;                  % Number of experiments to run
+        uSpec;                  % User specifications 
+        statesLog;              % History of state data 
+        Sval = [];              % Used for calculating safety score      
+        SafetyScore = [];       % Metric for damage done via collisions 
+        SafetyScore_TD = [];    % Time normalized safety score
+        inBounds = false;       % Whether a given experiment stays in testbed 
+        maxRunTime              % The maximum run time of the Monte Carlo (seconds)
+        safe  = false;          % Initialize safety to false 
+        valid = false;          % Initialize validity to false 
+        message = '\n';         % Message returned to user 
+        barriers_used = false;  % Switched to "true" iff barriers are called
+        inTestbed = false;      % Whether all experiments stay in testbed
+        
+        
+        % Options
         make_plot = true;       % Plot experiments (together) at end of program
         static_ICs = true;      % Keep initial pose the same for every experiment
-        sim_collisions = false;  
-        Sval;
-        SafetyScore;
-        SafetyScore_TD; 
-        inBounds;               % Whether a given experiment stays in testbed 
-        maxRunTime = 60*1       % The maximum run time of the Monte Carlo (seconds)
-        barriers_used = false;  % Switched to "true" iff barriers are called
-        inTestbed = true;       % Whether all experiments stay in testbed
-%         exempt = false;         
-        message = '\n'; 
-        safe = false; 
-        valid = false; 
+        sim_collisions = false; % Simulate collisions?        
     end
     
-    properties (GetAccess = private, SetAccess = private) % #ADD: Should be able to get some of these properties automatically by instantiating robotarium classes
-        N_min
-        N_max
-        iter_min
-        iter_max
-        valid_iter_range
-        valid_N_range
-        boundaries =  [-1.5, 1.5, -1.5, 1.5];
-        boundary_points = {[-1.5, 1.5, 1.5, -1.5], [-1.5, -1.5, 1.5, 1.5]}; 
-        robot_diameter = 0.08;
-        damageThreshold = 0.03;                   % A normalization factor on how much damage the robots can take
+    properties (GetAccess = private, SetAccess = private) % #ADD: Should be able to get some of these properties automatically by instantiating robotarium classes        
+        valid_iter_range                    % The range of acceptable experiment lengths
+        valid_N_range                       % The range of robots available 
+        damageThreshold ;                   % A normalization factor on how much damage the robots can take
+        boundaries =  [-1.5, 1.5, -1.5, 1.5];                                % Testbed boundaries
+        boundary_points = {[-1.5, 1.5, 1.5, -1.5], [-1.5, -1.5, 1.5, 1.5]};  % Same
+        robot_diameter = 0.08;                                               % Diameter of Robot
     end
     
     methods(Static)
@@ -43,13 +41,9 @@ classdef Experiment < handle
     end
     
     methods
-        function this = Experiment(N_min)
-            % Specify valid ranges
-            this.E = 1 ;                     % Number of Experiments
-%             N_min = 1;                       % Min 1   robot
-            N_max = 50;                      % Max # robots
-            iter_min = 32;                   % Min 1  second
-            iter_max = ceil(10.*(60/0.033)); % Max 10 minutes
+        function this = Experiment(N_min, N_max, iter_min, iter_max, damageThreshold, maxRunTime)
+            this.damageThreshold = damageThreshold; 
+            this.maxRunTime = maxRunTime; 
             this.valid_iter_range = iter_min:iter_max;
             this.valid_N_range = N_min:N_max;
         end
