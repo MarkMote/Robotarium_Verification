@@ -43,6 +43,7 @@ classdef Robotarium < ARobotarium
         currentIteration = 0;          % #MOD
         expNum;                        % The current experiment iteration in the MC loop
         sim_collisions                 % whether or not to simulate collisions
+        iter_max ;              % the maximum allowable iterations
         S = 0 ;                        % safety score
         D_robot                        % Actual Robot diameter (set in the experiment class) 
         W = 0;                         % whether or not the robots stay in the testbed
@@ -70,8 +71,9 @@ classdef Robotarium < ARobotarium
                 this.expNum = this.expNum -1;
             end
             % Load specifications from experiment class
-            ExpData = Experiment(1,1,1,1,1,1);
+            ExpData = Experiment();
             this.sim_collisions = ExpData.sim_collisions;
+            this.iter_max = ExpData.valid_iter_range(end);
             N = number_of_agents;
             this.D_robot = 0.06;
             
@@ -128,7 +130,13 @@ classdef Robotarium < ARobotarium
             end
              
             total_time = this.time_step;
-
+            
+            % Keep track of current iteration and break script if it goes over 
+            this.currentIteration=this.currentIteration+1; 
+            if this.currentIteration > this.iter_max
+                error('Invalid number of iterations specified - experiment length exceeds maximum')
+            end
+            
             %Update velocities using unicycle dynamics
             this.poses(1, i) = this.poses(1, i) + this.x_lin_vel_coef*total_time.*this.velocities(1, i).*cos(this.poses(3, i));
             this.poses(2, i) = this.poses(2, i) + this.y_lin_vel_coef*total_time.*this.velocities(1, i).*sin(this.poses(3, i));

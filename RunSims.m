@@ -1,22 +1,33 @@
-S% Runs the Monte Carlo
+% Runs the Monte Carlo
 clear; clc; close all
+cd '/home/mark/Dropbox/MATLAB/Monte_Carlo/Robotarium_Verification'
 % Note - must go into Robotartium object and make sure data is being saved
 % for each experiement regardless of user specification
 
-%% Set Specifications 
-N_min = 1;  % Minumum number of robots allowable 
-N_max = 50;                      % Max # robots
-iter_min = 32;                   % Min 1  second
-iter_max = ceil(10.*(60/0.033)); % Max 10 minutes
-damageThreshold = 0.03;          % A normalization factor on how much damage the robots can take
-maxRunTime = 20;                 % second
+
+
+%% Initiate JSON file in case timeout occurs 
+out.valid = false; 
+out.safe  = false; 
+out.message = '\nExperiment crashed';
+out.simulations = 0; 
+out.user_params.N = []; 
+out.user_params.iterations = [];
+out.details.barriers_used = [];
+out.details.in_testbed = [];
+out.details.safety_score = [];
+out.details.ss_variance = [];
+
+savejson('',out,'Saved_Experiments/OutData.json');
 
 %% Initialization
+maxRunTime = 20;                 % Desired time to run Monte Carlo (s)
+
 run init
-Exp = Experiment(N_min, N_max, iter_min, iter_max, damageThreshold, maxRunTime);
+Exp = Experiment();
 
 % Location of script
-cd formation_control
+cd consensus_static
 % cd examples/formation_control;
 
 % Clear all *.mat files from the workspace
@@ -36,7 +47,7 @@ try
     Exp.valid = Exp.interpSpecs(1, true);
 catch me
     Exp.valid = false; 
-    Exp.message = strcat('\nExperiment does not complete.\n\nError message:\n- ',me.message); % If experiment runs correctly, reset message 
+    Exp.message = strcat('\nSimulation does not complete.\n\nMATLAB error message:\n- ',me.message); % If experiment runs correctly, reset message 
     Exp.E = 0;
     Exp.uSpec{1}.N = [];
     Exp.uSpec{1}.iterations = [];
@@ -95,11 +106,11 @@ if Exp.valid % If first experiment is not Exp.valid, do not bother with the rest
     % Determine whether all experiments stay in testbed
     if sum(1-Exp.inBounds)== 0
         Exp.inTestbed = true;
-        
     else
         Exp.inTestbed = false;
-        
     end
+    
+    %% Print to terminal
     
     fprintf('\n___________________________________________________\n')
     if Exp.SafetyScore>0 && Exp.inTestbed
