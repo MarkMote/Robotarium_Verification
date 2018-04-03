@@ -11,7 +11,7 @@ classdef Experiment < handle
         inBounds = false;       % Whether a given experiment stays in testbed 
         maxRunTime              % The maximum run time of the Monte Carlo (seconds)
         safe  = false;          % Initialize safety to false 
-        valid = true;          % Initialize validity to false 
+        valid = false;          % Initialize validity to false 
         message = '\n';         % Message returned to user 
         barriers_used = false;  % Switched to "true" iff barriers are called
         inTestbed = false;      % Whether all experiments stay in testbed
@@ -23,16 +23,15 @@ classdef Experiment < handle
     end
     
     properties (GetAccess = public, SetAccess = private) % #ADD: Should be able to get some of these properties automatically by instantiating robotarium classes        
-        % Options
-        valid_iter_range = 32:100;%ceil(10.*(60/0.033));         % The range of acceptable experiment lengths
-        valid_N_range = 1:50;                               % The range of robots available 
-        damageThreshold = 0.03 ;                   % A normalization factor on how much damage the robots can take
-        
-        
-        %         experimentTimeout;                % Maximum time allowable to execute "main" script
         boundaries =  [-1.5, 1.5, -1.5, 1.5];                                % Testbed boundaries
         boundary_points = {[-1.5, 1.5, 1.5, -1.5], [-1.5, -1.5, 1.5, 1.5]};  % Same
         robot_diameter = 0.08;                                               % Diameter of Robot
+        
+        % Options
+        valid_iter_range = 32:ceil(10.*(60/0.033));              % The range of acceptable experiment lengths
+        valid_N_range = 1:50;                                    % The range of robots available 
+        damageThreshold = 0.03 ;                                 % A normalization factor on how much damage the robots can take
+        
     end
     
     methods(Static)
@@ -45,13 +44,7 @@ classdef Experiment < handle
     
     methods
         function this = Experiment()
-%             if nargin == 6
-%                 this.damageThreshold = damageThreshold;
-%                 this.maxRunTime = maxRunTime;
-%                 this.valid_iter_range = iter_min:iter_max;
-%                 this.valid_N_range = N_min:N_max;
-% %                 this.experimentTimeout=experimentTimeout;
-%             end
+            
         end
         
         function valid = interpSpecs(this,e,check)
@@ -83,7 +76,7 @@ classdef Experiment < handle
         end
         
         
-        function saveExps(this) % Save all experiments
+        function saveExps(this) % Save all experiments and process data (called once after all data has been generated) 
             files = what;
             uData = files.mat;
             i = 1;
@@ -178,9 +171,6 @@ classdef Experiment < handle
         end
         
     end
-    
-    
-    
     
 end
 
