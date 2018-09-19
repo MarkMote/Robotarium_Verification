@@ -19,14 +19,13 @@ out.details.ss_variance = [];
 savejson('',out,'Saved_Experiments/OutData.json');
 
 %% Initialization
-maxRunTime = 20;                 % Desired time to run Monte Carlo (s)
+maxRunTime = 1;                 % Desired time to run Monte Carlo (s)
 
 run init
 Exp = Experiment();
 
 % Location of script
-cd consensus_static
-% cd examples/formation_control;
+cd USER_EXPERIMENT
 
 % Clear all *.mat files from the workspace
 delete *.mat
@@ -178,5 +177,5 @@ out.details.in_testbed = Exp.inTestbed;
 out.details.safety_score = Exp.SafetyScore;
 out.details.ss_variance = var(Exp.Sval);
 
-savejson('',out,'Saved_Experiments/OutData.json')
+savejson('',out,'Saved_Experiments/OutData.json');
 

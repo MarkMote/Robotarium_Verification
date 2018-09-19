@@ -17,7 +17,7 @@ classdef Experiment < handle
         inTestbed = false;      % Whether all experiments stay in testbed
         
         % Options
-        make_plot = true;       % Plot experiments (together) at end of program
+        make_plot = false;       % Plot experiments (together) at end of program
         static_ICs = true;      % Keep initial pose the same for every experiment
         sim_collisions = false; % Simulate collisions?        
     end

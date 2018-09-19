@@ -1,16 +1,16 @@
 {
 	"valid": 1,
-	"safe": 0,
-	"message": "\\nExperiment Unsafe\\nReason(s):\\n\\n- Too many collisions\\n",
-	"simulations": 37,
+	"safe": 1,
+	"message": "\\nExperiment Safe!\\n",
+	"simulations": 0,
 	"user_params": {
-		"N": 10,
-		"iterations": 100
+		"N": 6,
+		"iterations": 101
 	},
 	"details": {
 		"barriers_used": 0,
 		"in_testbed": 1,
-		"safety_score": -74.70963465,
-		"ss_variance": 882.562914
+		"safety_score": 76.7490013,
+		"ss_variance": 0
 	}
 }
