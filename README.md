@@ -1,6 +1,6 @@
 # Monte Carlo Verification of Robobotarium Experiments
 
-_This package contains the tools for accessing the safety and robustness of experiments submitted for use in the Robotarium_
+_This package contains the tools for assessing the safety and robustness of experiments submitted for use in the Robotarium_
 
 **Author:** Mark Mote
 ___
