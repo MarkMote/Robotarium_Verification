@@ -14,7 +14,11 @@
 
 %% Implementation
 function [ si_barrier_certificate ] = create_si_barrier_certificate(varargin)
-        
+    
+    %% MOD 
+    save('barriers_used_in_exp','varargin');
+    %%
+
     parser = inputParser;
     parser.addParameter('BarrierGain', 1e4);
     parser.addParameter('SafetyRadius', 0.1);

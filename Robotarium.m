@@ -75,7 +75,7 @@ classdef Robotarium < ARobotarium
             this.sim_collisions = ExpData.sim_collisions;
             this.iter_max = ExpData.valid_iter_range(end);
             N = number_of_agents;
-            this.D_robot = 0.06;
+            this.D_robot = 0.055;
             
             % Systematic Robot Errors f(n)
             this.delV_delVc = 0.1;                    % Percent Diameter Variation: Davg/Dnom        % check
@@ -121,7 +121,7 @@ classdef Robotarium < ARobotarium
                 this.checkBounds(); % Check whether agents stay in testbed 
             end
             
-            % Add error to the velocities except for first experiment #MOD
+            % Add error to the velocities - except for first experiment #MOD
             if this.expNum > 1
                 for j = 1:this.number_of_agents
                     this.velocities(1,j) = this.delV_delVcL(j)*this.velocities(1,j) + this.delV_delOmgcL(j)*this.velocities(2,j);
@@ -309,6 +309,15 @@ classdef Robotarium < ARobotarium
             %% Custom
             % Save user specs % #MOD #ADD: initial conditions - add this.setICs function with possible rand argument - no
             if this.expNum == 1
+                % Check for use of barrier functions
+                if isfile('barriers_used_in_exp.mat')
+                    userSpec.barriers_used = true; 
+                    delete('barriers_used_in_exp.mat')
+                else
+                    userSpec.barriers_used = false;
+                end
+                
+                
                 userSpec.N = this.number_of_agents;
                 userSpec.iterations = this.current_saved_iterations-1;
                 for i = 1:userSpec.N

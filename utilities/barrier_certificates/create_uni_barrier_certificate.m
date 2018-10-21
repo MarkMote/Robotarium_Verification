@@ -21,7 +21,8 @@
 
 %% Implementation 
 function [ uni_barrier_certificate ] = create_uni_barrier_certificate(varargin)
-
+    save('barriers_used_in_exp','varargin');
+    
     parser = inputParser;
     addOptional(parser, 'BarrierGain', 8e3);
     addOptional(parser, 'SafetyRadius', 0.05);

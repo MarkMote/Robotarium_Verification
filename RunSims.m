@@ -19,7 +19,7 @@ out.details.ss_variance = [];
 savejson('',out,'Saved_Experiments/OutData.json');
 
 %% Initialization
-maxRunTime = 1;                 % Desired time to run Monte Carlo (s)
+maxRunTime = 30;                 % Desired time to run Monte Carlo (s)
 
 run init
 Exp = Experiment();
@@ -54,7 +54,7 @@ end
 %% Experiment Looping
 % Additional runs include added noise
 
-if Exp.valid % If first experiment is not Exp.valid, do not bother with the rest
+if Exp.valid % If first experiment is not valid, do not bother with the rest
     fprintf('\n\nEstimated Runtime: %d seconds\n\n',maxRunTime);
     %     fprintf('Experiment 1')
     h = waitbar(0,'Running Simulations...');
@@ -113,6 +113,9 @@ if Exp.valid % If first experiment is not Exp.valid, do not bother with the rest
         fprintf('\n###Evaluation: SAFE\n')
         Exp.message = strcat('\nExperiment Safe!',Exp.message);
         Exp.safe = true;
+        if Exp.barriers_used == false
+        	Exp.message = strcat(Exp.message,'\n* Warning: Barrier certificates not detected!');
+        end
         if mean(Exp.Sval)-2*var(Exp.Sval) > 0
             fprintf('###Confidence: High\n')
         elseif mean(Exp.Sval)-var(Exp.Sval) > 0
@@ -124,15 +127,25 @@ if Exp.valid % If first experiment is not Exp.valid, do not bother with the rest
     else
         fprintf('\n###NOT SAFE\n')
         fprintf('###Reason(s): ')
-        Exp.message = strcat('\nExperiment Unsafe\nReason(s):\n',Exp.message);
+        Exp.message = strcat('\nExperiment Unsafe\n\nReason(s):',Exp.message);
         Exp.safe = false;
         if Exp.SafetyScore<0
             fprintf('###- Too many collisions\n')
-            Exp.message = strcat(Exp.message,'- Too many collisions\n');
+            if Exp.barriers_used == false 
+                Exp.message = strcat(Exp.message,'- Too many collisions!');
+            else
+                Exp.message = strcat(Exp.message,'- Too many collisions!');
+            end
         end
         if ~Exp.inTestbed
             fprintf('###- Robots leave testbed\n')
             Exp.message = strcat(Exp.message,'- Robots leave testbed\n');
+        end
+        if Exp.barriers_used == true && Exp.SafetyScore<0
+        	Exp.message = strcat(Exp.message,'\n\nMake sure that barrier certificates are being called correctly, and that the "Safety_Radius" is large enough.');
+        end
+        if Exp.barriers_used == false && Exp.SafetyScore<0
+        	Exp.message = strcat(Exp.message,'\n\nWe suggest using barrier certificates for collision avoidance. ');
         end
     end
     fprintf('\n###Experiment Info:')

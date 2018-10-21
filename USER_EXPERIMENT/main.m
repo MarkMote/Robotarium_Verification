@@ -26,7 +26,7 @@ formationControlGain = 4;
 
 % Select the number of iterations for the experiment.  This value is
 % arbitrary
-iterations = 100;
+iterations = 250;
 
 % Communication topology for the desired formation.  We need 2 * N - 3 = 9
 % edges to ensure that the formation is rigid.
@@ -96,8 +96,8 @@ for t = 0:iterations
     end
     
     % Transform the single-integrator dynamics to unicycle dynamics using a provided utility function
-    dx = si_barrier_cert(dx, x);
-    dx = si_to_uni_dyn(dx, x);  
+%     dx = si_barrier_cert(dx, x);
+%     dx = si_to_uni_dyn(dx, x);  
     
     % Set velocities of agents 1:N
     r.set_velocities(1:N, dx);

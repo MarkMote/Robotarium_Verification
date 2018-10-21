@@ -17,15 +17,15 @@ classdef Experiment < handle
         inTestbed = false;      % Whether all experiments stay in testbed
         
         % Options
-        make_plot = false;       % Plot experiments (together) at end of program
-        static_ICs = true;      % Keep initial pose the same for every experiment
+        make_plot = false;      % Plot experiments (together) at end of program
+        static_ICs = false      % Keep initial pose the same for every experiment
         sim_collisions = false; % Simulate collisions?        
     end
     
     properties (GetAccess = public, SetAccess = private) % #ADD: Should be able to get some of these properties automatically by instantiating robotarium classes        
         boundaries =  [-1.5, 1.5, -1.5, 1.5];                                % Testbed boundaries
         boundary_points = {[-1.5, 1.5, 1.5, -1.5], [-1.5, -1.5, 1.5, 1.5]};  % Same
-        robot_diameter = 0.08;                                               % Diameter of Robot
+        % robot_diameter = 0.055;                                              % Diameter of Robot 
         
         % Options
         valid_iter_range = 32:ceil(10.*(60/0.033));              % The range of acceptable experiment lengths
@@ -66,7 +66,9 @@ classdef Experiment < handle
                     fprintf('\n\n###EXPERIMENT STOPPED - Check # iterations\n\n')
                     this.message = strcat(this.message,'- Invalid number of iterations specified\n');
                 end
-               load ExpData_1.mat
+                this.barriers_used = this.uSpec{e}.barriers_used; 
+                
+                load ExpData_1.mat
                 if exitsArena
                     valid = false;
                     fprintf('\n\n###EXPERIMENT STOPPED - Make sure robots stay in the arena\n\n') 
@@ -82,7 +84,7 @@ classdef Experiment < handle
             i = 1;
             j = 1;
             for e = 1:length(uData)
-                if ~strcmp(uData{e},'userSpec.mat')
+                if ~(strcmp(uData{e},'userSpec.mat') || strcmp(uData{e},'barriers_used_in_exp.mat')) 
                     load(uData{e})
                     if strcmp(uData{e}(1:7),'ExpData')
                         this.inBounds(i) = ~exitsArena; 
